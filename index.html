@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Tran - Creative Player Ready!</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        game: {
+                            bg: '#e0f2fe', // Sky 100
+                            primary: '#0ea5e9', // Sky 500
+                            secondary: '#38bdf8', // Sky 400
+                            accent: '#facc15', // Yellow 400
+                            dark: '#0c4a6e', // Sky 900
+                            card: '#ffffff',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                        display: ['Fredoka', 'cursive'],
+                    },
+                    boxShadow: {
+                        'game': '0 8px 0 0 #0c4a6e, 0 8px 20px rgba(0,0,0,0.2)',
+                        'game-hover': '0 4px 0 0 #0c4a6e, 0 4px 10px rgba(0,0,0,0.2)',
+                        'card': '0 6px 0 0 #cbd5e1',
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Fredoka for that rounded, friendly game look -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #e0f2fe;
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%230ea5e9" stroke="%23ffffff" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>'), auto;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e0f2fe;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 99px;
+            border: 3px solid #e0f2fe;
+        }
+
+        /* Interactive Elements */
+        .game-btn {
+            transition: all 0.1s;
+        }
+
+        .game-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 0 #0c4a6e !important;
+        }
+
+        /* Parallax Background Elements */
+        .parallax-item {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* Lightbox */
+        #lightbox {
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+
+        #lightbox.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body class="text-game-dark">
+
+    <!-- Floating Background Elements (Parallax) -->
+    <div id="parallax-container" class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div data-speed="2" class="parallax-item top-20 left-10 text-game-secondary opacity-30"><i data-lucide="cloud"
+                class="w-32 h-32"></i></div>
+        <div data-speed="-2" class="parallax-item bottom-40 right-10 text-game-accent opacity-30"><i
+                data-lucide="gamepad-2" class="w-24 h-24"></i></div>
+        <div data-speed="1" class="parallax-item top-1/2 left-1/3 text-game-primary opacity-20"><i data-lucide="rocket"
+                class="w-16 h-16"></i></div>
+        <div data-speed="-1" class="parallax-item top-1/3 right-1/4 text-purple-300 opacity-20"><i data-lucide="zap"
+                class="w-20 h-20"></i></div>
+        <div data-speed="3" class="parallax-item bottom-10 left-1/4 text-green-300 opacity-20"><i data-lucide="music"
+                class="w-12 h-12"></i></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 pointer-events-none p-4">
+        <div class="container mx-auto flex justify-between items-center pointer-events-auto">
+            <div
+                class="bg-white border-2 border-game-dark px-6 py-2 rounded-full shadow-game flex items-center gap-2 transform hover:scale-105 transition-transform duration-300">
+                <div class="bg-game-accent rounded-full p-1 border-2 border-game-dark">
+                    <i data-lucide="joystick" class="w-6 h-6 text-game-dark"></i>
+                </div>
+                <span class="text-xl font-bold text-game-dark">Trang Tran</span>
+            </div>
+
+            <div class="hidden md:flex gap-4">
+                <a href="#about"
+                    class="game-btn bg-white hover:bg-sky-50 text-game-dark font-bold py-2 px-6 rounded-2xl border-2 border-game-dark shadow-game transition-all">About</a>
+                <a href="#projects"
+                    class="game-btn bg-white hover:bg-sky-50 text-game-dark font-bold py-2 px-6 rounded-2xl border-2 border-game-dark shadow-game transition-all">Quests</a>
+                <a href="#skills"
+                    class="game-btn bg-white hover:bg-sky-50 text-game-dark font-bold py-2 px-6 rounded-2xl border-2 border-game-dark shadow-game transition-all">Skills</a>
+                <a href="#contact"
+                    class="game-btn bg-game-accent hover:bg-yellow-300 text-game-dark font-bold py-2 px-6 rounded-2xl border-2 border-game-dark shadow-game transition-all">Contact</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn"
+                class="md:hidden game-btn bg-white text-game-dark p-2 rounded-xl border-2 border-game-dark shadow-game">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu"
+            class="hidden absolute top-20 right-4 w-64 bg-white border-4 border-game-dark rounded-3xl shadow-2xl p-4 pointer-events-auto transform origin-top-right transition-transform">
+            <div class="flex flex-col space-y-3">
+                <a href="#about" class="block text-center font-bold text-lg hover:text-game-primary py-2">About</a>
+                <a href="#projects" class="block text-center font-bold text-lg hover:text-game-primary py-2">Quests
+                    (Projects)</a>
+                <a href="#skills" class="block text-center font-bold text-lg hover:text-game-primary py-2">Stats
+                    (Skills)</a>
+                <a href="#contact"
+                    class="block text-center font-bold text-lg bg-game-accent rounded-xl py-2 border-2 border-game-dark text-game-dark shadow-card">Start
+                    Game</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="about" class="relative pt-32 pb-20 container mx-auto px-6 z-10">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2 space-y-6 text-center lg:text-left">
+                <div
+                    class="inline-block bg-white border-2 border-game-dark px-4 py-2 rounded-full shadow-card transform rotate-2">
+                    <span class="font-bold text-game-primary tracking-wide">LEVEL 3+ STRATEGIST</span>
+                </div>
+
+                <h1 class="text-5xl lg:text-7xl font-bold text-game-dark leading-tight drop-shadow-sm">
+                    Crafting <span
+                        class="text-game-primary inline-block transform hover:scale-110 hover:-rotate-3 transition-transform cursor-pointer">Fun</span>
+                    & <span
+                        class="text-game-accent inline-block transform hover:scale-110 hover:rotate-3 transition-transform cursor-pointer"
+                        style="text-shadow: 2px 2px 0px #0c4a6e;">Impact</span><br>
+                    Digital Experiences
+                </h1>
+
+                <p class="text-xl text-slate-600 font-medium">
+                    Bridging the gap between <span
+                        class="bg-blue-100 px-2 rounded-lg border border-blue-200 text-blue-700">Creative Vision</span>
+                    and <span class="bg-yellow-100 px-2 rounded-lg border border-yellow-200 text-yellow-700">Product
+                        Strategy</span> to unlock new levels of growth.
+                </p>
+
+                <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#projects"
+                        class="game-btn bg-game-primary hover:bg-sky-400 text-white text-xl font-bold py-4 px-8 rounded-3xl border-b-8 border-game-dark active:border-b-0 active:translate-y-2 transition-all flex items-center gap-3">
+                        <i data-lucide="play" class="fill-current"></i> View Quests
+                    </a>
+                    <a href="#contact"
+                        class="game-btn bg-white hover:bg-slate-50 text-game-dark text-xl font-bold py-4 px-8 rounded-3xl border-b-8 border-slate-300 active:border-b-0 active:translate-y-2 transition-all flex items-center gap-3">
+                        <i data-lucide="message-circle"></i> Chat
+                    </a>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 relative flex justify-center">
+                <div class="relative w-80 h-80 lg:w-96 lg:h-96 group">
+                    <!-- Decorative Behind -->
+                    <div
+                        class="absolute inset-0 bg-game-accent rounded-[3rem] transform rotate-6 border-4 border-game-dark shadow-game group-hover:rotate-12 transition-transform duration-500">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-white rounded-[3rem] transform -rotate-3 border-4 border-game-dark z-10 overflow-hidden group-hover:-rotate-6 transition-transform duration-500">
+                        <img src="cv.png" alt="Trang Tran Avatar" class="w-full h-full object-cover">
+                    </div>
+
+                    <!-- Floating Stats Badge -->
+                    <div
+                        class="absolute -bottom-6 -right-6 z-20 bg-white border-4 border-game-dark p-4 rounded-2xl shadow-game animate-bounce-slow">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="trophy" class="text-yellow-500 w-8 h-8 fill-current"></i>
+                            <div>
+                                <p class="text-xs font-bold text-gray-500 uppercase">Current Streak</p>
+                                <p class="text-xl font-black text-game-dark">100% Impact</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quests (Projects) Section -->
+    <section id="projects" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-[3rem] border-4 border-game-dark p-8 md:p-12 shadow-game relative">
+                <!-- Section Header -->
+                <div
+                    class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-game-accent px-8 py-3 rounded-2xl border-4 border-game-dark shadow-game">
+                    <h2 class="text-3xl font-black text-game-dark uppercase tracking-wider">Mission Log</h2>
+                </div>
+
+                <p class="text-center text-slate-500 mt-6 mb-12 text-lg font-medium">Click any item card to inspect
+                    details.</p>
+
+                <!-- Gallery Grid -->
+                <div id="gallery-grid" class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                    <!-- Items injected via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Character Stats (Skills) & Experience -->
+    <section id="skills" class="py-20 container mx-auto px-6 z-10">
+        <div class="grid lg:grid-cols-2 gap-12">
+
+            <!-- Tech Tree (Skills) -->
+            <div class="space-y-8">
+                <h2 class="text-4xl font-black text-game-dark flex items-center gap-4">
+                    <span class="bg-blue-500 text-white p-2 rounded-xl border-2 border-game-dark shadow-card"><i
+                            data-lucide="zap"></i></span>
+                    Skill Tree
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Creative Skill Card -->
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card transform hover:-translate-y-2 transition-transform">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-purple-100 p-3 rounded-xl border-2 border-purple-300"><i
+                                    data-lucide="palette" class="text-purple-600"></i></div>
+                            <h3 class="text-xl font-bold text-game-dark">Creative Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg border border-purple-200 font-bold text-sm">Ideation</span>
+                            <span
+                                class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg border border-purple-200 font-bold text-sm">Storytelling</span>
+                            <span
+                                class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg border border-purple-200 font-bold text-sm">Creative
+                                Strategy</span>
+                        </div>
+                    </div>
+
+                    <!-- Product Skill Card -->
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card transform hover:-translate-y-2 transition-transform">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-blue-100 p-3 rounded-xl border-2 border-blue-300"><i
+                                    data-lucide="bar-chart-2" class="text-blue-600"></i></div>
+                            <h3 class="text-xl font-bold text-game-dark">Product & Analytical Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg border border-blue-200 font-bold text-sm">Basic
+                                Data Analysis</span>
+                            <span
+                                class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg border border-blue-200 font-bold text-sm">Backlog
+                                Management</span>
+                            <span
+                                class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg border border-blue-200 font-bold text-sm">Data-driven
+                                Decision Making</span>
+                        </div>
+                    </div>
+
+                    <!-- Workflow & Collaboration -->
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card transform hover:-translate-y-2 transition-transform">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-orange-100 p-3 rounded-xl border-2 border-orange-300"><i
+                                    data-lucide="git-merge" class="text-orange-600"></i></div>
+                            <h3 class="text-xl font-bold text-game-dark">Workflow & Collaboration</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="bg-orange-50 text-orange-700 px-3 py-1 rounded-lg border border-orange-200 font-bold text-sm">Cross-functional
+                                Collaboration</span>
+                            <span
+                                class="bg-orange-50 text-orange-700 px-3 py-1 rounded-lg border border-orange-200 font-bold text-sm">Workflow
+                                Optimization</span>
+                            <span
+                                class="bg-orange-50 text-orange-700 px-3 py-1 rounded-lg border border-orange-200 font-bold text-sm">Problem
+                                Solving (RCA, 5 Whys)</span>
+                        </div>
+                    </div>
+
+                    <!-- Soft Skills -->
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card transform hover:-translate-y-2 transition-transform sm:col-span-2">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-green-100 p-3 rounded-xl border-2 border-green-300"><i data-lucide="users"
+                                    class="text-green-600"></i></div>
+                            <h3 class="text-xl font-bold text-game-dark">Soft Skills</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="bg-green-50 text-green-700 px-3 py-1 rounded-lg border border-green-200 font-bold text-sm">Team
+                                Management</span>
+                            <span
+                                class="bg-green-50 text-green-700 px-3 py-1 rounded-lg border border-green-200 font-bold text-sm">Communication</span>
+                            <span
+                                class="bg-green-50 text-green-700 px-3 py-1 rounded-lg border border-green-200 font-bold text-sm">Teamwork</span>
+                            <span
+                                class="bg-green-50 text-green-700 px-3 py-1 rounded-lg border border-green-200 font-bold text-sm">Critical
+                                Thinking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign History (Experience) -->
+            <div class="space-y-8">
+                <h2 class="text-4xl font-black text-game-dark flex items-center gap-4">
+                    <span class="bg-orange-500 text-white p-2 rounded-xl border-2 border-game-dark shadow-card"><i
+                            data-lucide="map"></i></span>
+                    Campaign History
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Current & Recent Roles (Mirai Studio) -->
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 bg-game-primary text-white text-xs font-bold px-3 py-1 rounded-bl-xl border-l-2 border-b-2 border-white">
+                            CURRENT & RECENT</div>
+
+                        <!-- Role 1: PO -->
+                        <div class="mb-6">
+                            <h3 class="text-xl font-black text-game-dark">Product Owner @ Mirai Studio</h3>
+                            <p class="text-sm font-bold text-slate-400 mb-2">07/2025 - 12/2025</p>
+                            <p class="text-slate-600 text-sm">Managed backlog, built roadmap, and defined features
+                                through
+                                user stories + player insights.</p>
+                            <p class="text-slate-600 text-sm mt-2">Monitored key game metrics and proposed product
+                                optimizations.</p>
+                            <p class="text-slate-600 text-sm mt-2">Coordinated with Product, UA, and Creative to ensure
+                                quality and timely delivery.</p>
+                        </div>
+
+                        <!-- Separator -->
+                        <div class="my-6 border-t-4 border-dotted border-slate-200"></div>
+
+                        <!-- Role 2: Creative Lead/Strategist -->
+                        <div>
+                            <h3 class="text-xl font-black text-game-dark">Creative Team Lead & Creative Strategist</h3>
+                            <p class="text-sm font-bold text-slate-400 mb-2">09/2022 - 12/2025</p>
+                            <p class="text-slate-600 text-sm mt-1">Led Creative team and optimized workflows across
+                                Creative × UA × Product.</p>
+                            <p class="text-slate-600 text-sm mt-1">Researched trends, developed creative strategies, and
+                                directed campaign concepts.</p>
+                            <p class="text-slate-600 text-sm mt-1">Analyzed UA data to improve creative performance and
+                                optimized store listing assets.</p>
+                        </div>
+                    </div>
+
+                    <!-- Past Roles -->
+                    <div class="relative pl-8 border-l-4 border-slate-300 space-y-8">
+                        <div>
+                            <div
+                                class="absolute -left-[10px] top-1 w-4 h-4 rounded-full bg-slate-300 border-2 border-white">
+                            </div>
+                            <h4 class="font-bold text-game-dark">Content Creator (MC & Scriptwriting)</h4>
+                            <p class="text-xs text-slate-500 font-bold">05/2022 – 09/2022</p>
+                            <p class="text-sm text-slate-600 mt-1">Wrote scripts, hosted content, and produced
+                                studio/on-site videos.</p>
+                            <p class="text-sm text-slate-600 mt-1">Evaluated content performance on Facebook and
+                                YouTube.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div>
+                    <h2 class="text-4xl font-black text-game-dark flex items-center gap-4 mb-6">
+                        <span class="bg-red-500 text-white p-2 rounded-xl border-2 border-game-dark shadow-card"><i
+                                data-lucide="graduation-cap"></i></span>
+                        Education
+                    </h2>
+                    <div
+                        class="bg-white p-6 rounded-3xl border-4 border-game-dark shadow-card relative overflow-hidden">
+                        <h3 class="text-xl font-black text-game-dark">Vietnam Trade Union University</h3>
+                        <p class="text-sm font-bold text-slate-400 mb-2">09/2017 – 04/2021</p>
+                        <p class="text-slate-600 text-sm">Bachelor’s Degree in Social Work</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Level -->
+    <section id="contact" class="py-20 container mx-auto px-6 z-10 text-center">
+        <div class="bg-game-dark rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-game">
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-6">Ready to Start a New Game?</h2>
+
+                <div class="flex flex-col md:flex-row justify-center gap-6">
+                    <a href="mailto:trangmiu.a10.td1@gmail.com"
+                        class="game-btn bg-game-accent text-game-dark px-8 py-4 rounded-2xl font-black text-lg border-b-8 border-yellow-600 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="mail"></i> Send Invite
+                    </a>
+                    <a href="https://t.me/TMiuu279" target="_blank"
+                        class="game-btn bg-white text-game-primary px-8 py-4 rounded-2xl font-black text-lg border-b-8 border-slate-200 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="send"></i> Telegram
+                    </a>
+                </div>
+            </div>
+
+            <!-- Decorative Cycles -->
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-game-primary/30 rounded-full blur-3xl"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-slate-500 font-bold text-sm relative z-10">
+        <div class="container mx-auto">
+            <p>GAME OVER? NO, JUST BEGINNING.</p>
+            <p class="mt-2 text-xs opacity-60">© 2025 Trang Tran Portfolio</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 z-[100] bg-slate-900/90 hidden justify-center items-center p-4"
+        onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Full View"
+            class="max-w-full max-h-[90vh] rounded-3xl border-4 border-white shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="closeLightbox()">
+        <button
+            class="absolute top-6 right-6 text-white bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-md transition-colors border-2 border-white/50"
+            onclick="closeLightbox()">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <!-- Logic -->
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // --- DATA ---
+        const portfolioConfig = [
+            "1.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png"
+        ];
+        // Note: Removed a few as per previous user file edits, kept existing valid ones. 
+        // User removed 2,3,4,12 in previous edit steps, respecting that state.
+
+        // --- RENDER GALLERY ---
+        const galleryGrid = document.getElementById('gallery-grid');
+        if (galleryGrid) {
+            galleryGrid.innerHTML = '';
+            portfolioConfig.forEach((filename, index) => {
+                const item = document.createElement('div');
+                item.className = 'break-inside-avoid mb-6 bg-white p-3 rounded-3xl border-4 border-game-dark shadow-card hover:shadow-game-hover transform hover:-translate-y-1 transition-all cursor-pointer group';
+                item.onclick = () => openLightbox(`portfolio_images/${filename}`);
+
+                item.innerHTML = `
+                    <div class="relative overflow-hidden rounded-2xl border-2 border-slate-100">
+                        <img src="portfolio_images/${filename}" class="w-full h-auto transform group-hover:scale-110 transition-transform duration-500" alt="Quest Item">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="bg-game-accent text-game-dark font-black px-4 py-2 rounded-xl border-2 border-game-dark transform rotate-3">INSPECT</span>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.appendChild(item);
+            });
+        }
+
+        // --- PARALLAX EFFECT ---
+        document.addEventListener('mousemove', (e) => {
+            const items = document.querySelectorAll('.parallax-item');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            items.forEach(item => {
+                const speed = item.getAttribute('data-speed');
+                const xOffset = (window.innerWidth / 2 - e.clientX) * speed / 50;
+                const yOffset = (window.innerHeight / 2 - e.clientY) * speed / 50;
+                item.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+
+        // --- MOBILE MENU ---
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let isMenuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // --- LIGHTBOX ---
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.classList.add('active');
+            setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 50);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }, 200);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+
+</html>
